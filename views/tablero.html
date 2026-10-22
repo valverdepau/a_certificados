@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block contenido %}
+<div class="fila">
+  <div>
+    <span class="motor {% if supabase %}supa{% endif %}">Base de datos: {{ motor }}</span>
+    <span style="color:#6B7280;font-size:13px;margin-left:8px;">{{ n_est }} estudiantes · {{ n_eva }} evaluaciones</span>
+  </div>
+  <a class="btn" href="{{ url_for('rutas.descargar_todos') }}">Descargar todos los certificados</a>
+</div>
+
+<div class="tarjetas">
+  <div class="tarjeta apr"><div class="num">{{ contadores['Aprobación'] }}</div><div class="lbl">Certificados de Aprobación</div></div>
+  <div class="tarjeta par"><div class="num">{{ contadores['Participación'] }}</div><div class="lbl">Certificados de Participación</div></div>
+  <div class="tarjeta sin"><div class="num">{{ contadores['Sin certificado'] }}</div><div class="lbl">Sin certificado</div></div>
+</div>
+
+<div class="panel alerta">
+  <h2>Inconsistencias para revisar ({{ inconsistencias|length }})</h2>
+  {% if inconsistencias %}
+  <table>
+    <tr><th>Identificación</th><th>Nombre</th><th>Motivo</th></tr>
+    {% for i in inconsistencias %}
+    <tr><td>{{ i.identificacion }}</td><td>{{ i.nombre }}</td><td>{{ i.motivo }}</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<p>No hay inconsistencias.</p>{% endif %}
+</div>
+
+<div class="panel">
+  <h2>Resultados por estudiante</h2>
+  <table>
+    <tr><th>Estudiante</th><th>Programa</th><th>Promedio</th><th>Asistencia</th><th>Certificado</th><th></th></tr>
+    {% for r in resultados %}
+    <tr>
+      <td>{{ r.nombre }}<br><small style="color:#6B7280">{{ r.identificacion }}</small></td>
+      <td>{{ r.programa }}</td>
+      <td>{{ '%.2f'|format(r.promedio) }}</td>
+      <td>{{ '%.2f'|format(r.asistencia) }} %</td>
+      <td><span class="etq {{ r.tipo.split(' ')[0] }}">{{ r.tipo }}</span></td>
+      <td>{% if r.tipo != 'Sin certificado' %}<a class="link" href="{{ url_for('rutas.certificado', identificacion=r.identificacion, programa=r.programa) }}" target="_blank">Ver PDF</a>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

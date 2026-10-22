@@ -1,0 +1,6 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.vercel
+datos_local.db

@@ -1,0 +1,13 @@
+[project]
+name = "a-certificados"
+version = "1.0.0"
+description = "App de Certificados de la Academia (Flask + MVC, Supabase, Vercel)"
+requires-python = ">=3.12"
+dependencies = [
+    "flask>=3.0",
+    "pandas>=2.2",
+    "openpyxl>=3.1",
+    "fpdf2>=2.7",
+    "psycopg[binary]>=3.2",
+    "python-dotenv>=1.0",
+]

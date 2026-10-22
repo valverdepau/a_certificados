@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block contenido %}
+<div class="panel alerta">
+  <h2>La app no pudo leer la base de datos</h2>
+  <p>Base de datos configurada: <b>{{ motor }}</b></p>
+  <p>Mensaje técnico: <code>{{ error }}</code></p>
+  <p><b>Qué revisar:</b></p>
+  <ul>
+    <li>Que la dirección de <code>DATABASE_URL</code> sea la del <b>Transaction pooler</b> de Supabase (puerto 6543).</li>
+    <li>Que reemplazó <code>[YOUR-PASSWORD]</code> por su contraseña, sin dejar los corchetes.</li>
+    <li>Que el proyecto de Supabase no esté en pausa (en el panel, botón <b>Restore</b>).</li>
+    <li>En Vercel: que agregó <code>DATABASE_URL</code> en <b>Environment Variables</b> y volvió a publicar.</li>
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block contenido %}
+<div class="panel">
+  <h2>Cargar los datos a la base</h2>
+  <p>Base de datos actual: <span class="motor">{{ motor }}</span></p>
+  <p>Opción 1: presione el botón sin elegir archivos y la app carga los dos Excel de la carpeta <b>insumos</b>.</p>
+  <p>Opción 2: elija los dos Excel (por ejemplo, una versión con notas modificadas) y presione el botón.</p>
+  <form method="post" enctype="multipart/form-data">
+    <label>Maestro de estudiantes (.xlsx)</label>
+    <input type="file" name="maestro" accept=".xlsx">
+    <label>Registro de evaluaciones (.xlsx)</label>
+    <input type="file" name="evaluaciones" accept=".xlsx">
+    <p style="margin-top:20px"><button class="btn" type="submit">Cargar a la base de datos</button>
+    <a class="btn sec" href="{{ url_for('rutas.tablero') }}">Volver al tablero</a></p>
+  </form>
+  <p style="color:#6B7280;font-size:13px">Cargar reemplaza todo lo que haya en las tablas estudiantes y evaluaciones.</p>
+</div>
+{% endblock %}

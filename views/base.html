@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titulo %}Certificados · Academia Horizonte{% endblock %}</title>
+<style>
+  :root { --azul:#14213D; --dorado:#B8923D; --fondo:#F5F3EE; --texto:#1F2933; --gris:#6B7280; --verde:#1F7A4D; --ambar:#B7791F; --rojo:#B42318; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family: "Segoe UI", Roboto, Arial, sans-serif; background:var(--fondo); color:var(--texto); }
+  header { background:var(--azul); color:#fff; padding:18px 32px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; border-bottom:4px solid var(--dorado); }
+  header h1 { margin:0; font-size:21px; letter-spacing:.3px; }
+  header h1 span { color:var(--dorado); }
+  nav a { color:#fff; text-decoration:none; margin-left:18px; font-size:14px; opacity:.9; }
+  nav a:hover { opacity:1; text-decoration:underline; }
+  main { max-width:1150px; margin:0 auto; padding:26px 20px 60px; }
+  .motor { display:inline-block; font-size:13px; padding:5px 12px; border-radius:999px; background:#E8EEF8; color:var(--azul); font-weight:600; }
+  .motor.supa { background:#E3F4EA; color:var(--verde); }
+  .aviso { padding:12px 16px; border-radius:8px; margin:0 0 16px; font-size:14px; }
+  .aviso.ok { background:#E3F4EA; color:var(--verde); }
+  .aviso.error { background:#FDECEA; color:var(--rojo); }
+  .tarjetas { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; margin:20px 0 26px; }
+  .tarjeta { background:#fff; border-radius:12px; padding:20px 22px; box-shadow:0 1px 3px rgba(0,0,0,.08); border-top:5px solid var(--azul); }
+  .tarjeta .num { font-size:46px; font-weight:700; color:var(--azul); line-height:1.1; }
+  .tarjeta .lbl { color:var(--gris); font-size:14px; margin-top:4px; }
+  .tarjeta.apr { border-top-color:var(--verde); } .tarjeta.apr .num { color:var(--verde); }
+  .tarjeta.par { border-top-color:var(--ambar); } .tarjeta.par .num { color:var(--ambar); }
+  .tarjeta.sin { border-top-color:var(--rojo); } .tarjeta.sin .num { color:var(--rojo); }
+  .panel { background:#fff; border-radius:12px; padding:20px 22px; box-shadow:0 1px 3px rgba(0,0,0,.08); margin-bottom:22px; }
+  .panel h2 { margin:0 0 12px; font-size:18px; color:var(--azul); }
+  .alerta { border-left:5px solid var(--rojo); }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th { text-align:left; background:var(--azul); color:#fff; padding:9px 10px; font-weight:600; }
+  td { padding:8px 10px; border-bottom:1px solid #ECECEC; }
+  tr:nth-child(even) td { background:#FAFAF8; }
+  .etq { padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+  .etq.Aprobación { background:#E3F4EA; color:var(--verde); }
+  .etq.Participación { background:#FDF3E1; color:var(--ambar); }
+  .etq.Sin { background:#FDECEA; color:var(--rojo); }
+  .btn { display:inline-block; background:var(--dorado); color:#fff; padding:10px 18px; border-radius:8px; text-decoration:none; font-weight:600; border:0; cursor:pointer; font-size:14px; }
+  .btn.sec { background:var(--azul); }
+  a.link { color:var(--azul); font-weight:600; }
+  .fila { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  footer { text-align:center; color:var(--gris); font-size:12px; padding:20px; }
+  label { display:block; font-weight:600; margin:14px 0 6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Academia Horizonte · <span>Certificados</span></h1>
+  <nav><a href="{{ url_for('rutas.tablero') }}">Tablero</a><a href="{{ url_for('rutas.cargar') }}">Cargar datos</a><a href="{{ url_for('rutas.descargar_todos') }}">Descargar todos</a></nav>
+</header>
+<main>
+  {% with mensajes = get_flashed_messages(with_categories=true) %}
+    {% for categoria, texto in mensajes %}<div class="aviso {{ categoria }}">{{ texto }}</div>{% endfor %}
+  {% endwith %}
+  {% block contenido %}{% endblock %}
+</main>
+<footer>Universidad Fundepos · Técnico en IA Empresarial · Módulo 2 · App de práctica con datos ficticios</footer>
+</body>
+</html>
