@@ -37,7 +37,7 @@
       <td>{{ '%.2f'|format(r.promedio) }}</td>
       <td>{{ '%.2f'|format(r.asistencia) }} %</td>
       <td><span class="etq {{ r.tipo.split(' ')[0] }}">{{ r.tipo }}</span></td>
-      <td>{% if r.tipo != 'Sin certificado' %}<a class="link" href="{{ url_for('rutas.certificado', identificacion=r.identificacion, programa=r.programa) }}" target="_blank">Ver PDF</a>{% endif %}</td>
+      <td>{% if r.tipo != 'Sin certificado' %}<a class="link" href="{{ url_for('rutas.certificado', identificacion=r.identificacion, programa=slug(r.programa)) }}" target="_blank">Ver PDF</a>{% endif %}</td>
     </tr>
     {% endfor %}
   </table>

@@ -4,6 +4,7 @@ Recibe los clics del usuario (peticiones), llama al modelo y a los servicios,
 y entrega la vista. Aquí no se calcula nada.
 """
 import io
+import unicodedata
 
 from flask import Blueprint, abort, flash, redirect, render_template, request, send_file, url_for
 
@@ -16,6 +17,23 @@ rutas = Blueprint("rutas", __name__)
 def _resultados():
     carga_excel.asegurar_datos()
     return certificados.calcular_resultados(datos.leer_estudiantes(), datos.leer_evaluaciones())
+
+
+def _slug(texto):
+    """Convierte un texto en una dirección sencilla: sin tildes, sin espacios y en minúsculas.
+    Así el enlace funciona igual en Vercel, donde los acentos se codifican distinto."""
+    sin_tildes = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode("ascii")
+    limpio = "".join(c.lower() if c.isalnum() else "-" for c in sin_tildes)
+    return "-".join(parte for parte in limpio.split("-") if parte)
+
+
+def _reparar(texto):
+    """Si el texto llegó mal codificado (UTF-8 leído como latin-1), lo devuelve bien."""
+    try:
+        return texto.encode("latin-1").decode("utf-8")
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        return texto
+
 
 
 @rutas.route("/")
@@ -34,6 +52,7 @@ def tablero():
         supabase=datos.usa_supabase(),
         n_est=n_est,
         n_eva=n_eva,
+        slug=_slug,
     )
 
 
@@ -60,8 +79,11 @@ def cargar():
 @rutas.route("/certificado/<identificacion>/<path:programa>")
 def certificado(identificacion, programa):
     resultados, _c, _i = _resultados()
+    buscado = _slug(_reparar(programa))
     for r in resultados:
-        if r["identificacion"] == identificacion and r["programa"] == programa:
+        if r["identificacion"] == identificacion and (
+            r["programa"] == programa or _slug(r["programa"]) == buscado
+        ):
             if not certificados.lleva_certificado(r):
                 abort(404)
             return send_file(io.BytesIO(generador_pdf.crear_pdf(r)), mimetype="application/pdf",
