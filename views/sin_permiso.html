@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block titulo %}Sin permiso · Certificados Academia Horizonte{% endblock %}
+
+{% block contenido %}
+<div class="panel alerta" style="max-width:640px;margin:40px auto;">
+  <h2>Esta sección es solo para administradores</h2>
+  <p>Su sesión está abierta con estos datos:</p>
+  <ul style="line-height:1.9">
+    <li>Correo: <b>{{ session.correo or "sin sesión iniciada" }}</b></li>
+    <li>Rol: <b>{{ session.rol or "sin rol" }}</b></li>
+  </ul>
+  <p>Si necesita cargar los Excel, pídale a una persona con rol <b>admin</b> que lo haga.</p>
+  <p style="margin-top:22px">
+    <a class="btn" href="{{ url_for('rutas.tablero') }}">Volver al tablero</a>
+    <a class="btn sec" href="{{ url_for('rutas.salir') }}">Salir</a>
+  </p>
+</div>
+{% endblock %}

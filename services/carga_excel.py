@@ -49,16 +49,49 @@ def leer_excel(origen_maestro=None, origen_evaluaciones=None):
     return maestro, evaluaciones
 
 
-def cargar_a_la_base(origen_maestro=None, origen_evaluaciones=None):
+def leer_datos(origen_maestro=None, origen_evaluaciones=None):
+    """Lee los Excel y devuelve dos listas de diccionarios, SIN tocar la base de datos.
+
+    Si no se entregan archivos, lee los de la carpeta insumos (datos de fábrica).
+    Si se entregan, pueden ser archivos abiertos en memoria (io.BytesIO).
+    """
     maestro, evaluaciones = leer_excel(origen_maestro, origen_evaluaciones)
-    filas_est = [
-        (r.Identificacion, str(r.Nombre_Completo), str(r.Correo), str(r.Programa), str(r.Cohorte))
+
+    estudiantes = [
+        {
+            "identificacion": str(r.Identificacion),
+            "nombre_completo": str(r.Nombre_Completo),
+            "correo": str(r.Correo),
+            "programa": str(r.Programa),
+            "cohorte": str(r.Cohorte),
+        }
         for r in maestro.itertuples(index=False)
     ]
-    filas_eva = [
-        (r.Identificacion, str(r.Programa), str(r.Modulo), float(r.Nota),
-         float(r.Asistencia_Pct), str(r.Fecha_Cierre)[:10])
+    filas_evaluaciones = [
+        {
+            "identificacion": str(r.Identificacion),
+            "programa": str(r.Programa),
+            "modulo": str(r.Modulo),
+            "nota": float(r.Nota),
+            "asistencia_pct": float(r.Asistencia_Pct),
+            "fecha_cierre": str(r.Fecha_Cierre)[:10],
+        }
         for r in evaluaciones.itertuples(index=False)
+    ]
+    return estudiantes, filas_evaluaciones
+
+
+def cargar_a_la_base(origen_maestro=None, origen_evaluaciones=None):
+    """Lee los Excel y reemplaza el contenido de las tablas de la base de datos."""
+    estudiantes, evaluaciones = leer_datos(origen_maestro, origen_evaluaciones)
+    filas_est = [
+        (e["identificacion"], e["nombre_completo"], e["correo"], e["programa"], e["cohorte"])
+        for e in estudiantes
+    ]
+    filas_eva = [
+        (e["identificacion"], e["programa"], e["modulo"], e["nota"],
+         e["asistencia_pct"], e["fecha_cierre"])
+        for e in evaluaciones
     ]
     datos.guardar_datos(filas_est, filas_eva)
     return len(filas_est), len(filas_eva)

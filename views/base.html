@@ -43,12 +43,26 @@
   .fila { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
   footer { text-align:center; color:var(--gris); font-size:12px; padding:20px; }
   label { display:block; font-weight:600; margin:14px 0 6px; }
+  nav { display:flex; align-items:center; flex-wrap:wrap; gap:4px; }
+  .usuario { font-size:13px; margin-left:18px; opacity:.95; }
+  .insignia { display:inline-block; margin-left:8px; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+  .insignia.admin { background:var(--dorado); color:#fff; }
+  .insignia.usuario { background:#E8EEF8; color:var(--azul); }
+  .btn-salir { margin-left:12px; background:var(--dorado); color:#fff; padding:7px 14px; border-radius:7px; font-size:13px; font-weight:600; text-decoration:none; }
+  .btn-salir:hover { text-decoration:none; opacity:.9; }
 </style>
+{% block estilos %}{% endblock %}
 </head>
 <body>
 <header>
   <h1>Academia Horizonte · <span>Certificados</span></h1>
-  <nav><a href="{{ url_for('rutas.tablero') }}">Tablero</a><a href="{{ url_for('rutas.cargar') }}">Cargar datos</a><a href="{{ url_for('rutas.descargar_todos') }}">Descargar todos</a></nav>
+  {% if session.correo %}
+  <nav>
+    <a href="{{ url_for('rutas.tablero') }}">Tablero</a><a href="{{ url_for('rutas.descargar_todos') }}">Descargar todos</a>
+    <span class="usuario">{{ session.correo }} <span class="insignia {{ session.rol }}">{{ session.rol }}</span></span>
+    <a class="btn-salir" href="{{ url_for('rutas.salir') }}">Salir</a>
+  </nav>
+  {% endif %}
 </header>
 <main>
   {% with mensajes = get_flashed_messages(with_categories=true) %}

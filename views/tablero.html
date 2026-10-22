@@ -1,12 +1,49 @@
 {% extends "base.html" %}
 {% block contenido %}
+
+{% if datos_subidos %}
+<div class="aviso ok">
+  <b>Está viendo resultados de archivos subidos.</b> Viven solo en esta pantalla: no se guardaron.
+  Al recargar la app vuelve a los datos de fábrica, porque todavía no hay dónde guardarlos.
+  Los certificados PDF y la descarga completa se siguen generando con los datos de fábrica.
+</div>
+{% endif %}
+
 <div class="fila">
   <div>
     <span class="motor {% if supabase %}supa{% endif %}">Base de datos: {{ motor }}</span>
     <span style="color:#6B7280;font-size:13px;margin-left:8px;">{{ n_est }} estudiantes · {{ n_eva }} evaluaciones</span>
   </div>
+  {% if not datos_subidos %}
   <a class="btn" href="{{ url_for('rutas.descargar_todos') }}">Descargar todos los certificados</a>
+  {% endif %}
 </div>
+
+{% if session.rol == 'admin' %}
+<div class="panel">
+  <h2>Panel de administrador</h2>
+  <p style="color:#6B7280;font-size:13px;margin-top:0">
+    Datos en pantalla: <b>{{ origen_datos }}</b>
+  </p>
+  <form method="post" action="{{ url_for('rutas.cargar') }}" enctype="multipart/form-data">
+    <label for="maestro">Maestro de estudiantes (.xlsx)</label>
+    <input id="maestro" type="file" name="maestro" accept=".xlsx">
+
+    <label for="evaluaciones">Registro de evaluaciones (.xlsx)</label>
+    <input id="evaluaciones" type="file" name="evaluaciones" accept=".xlsx">
+
+    <p style="margin-top:20px">
+      <button class="btn" type="submit" name="accion" value="ver">Procesar y ver en pantalla</button>
+      <button class="btn sec" type="submit" name="accion" value="excel">Procesar y descargar Excel</button>
+    </p>
+    <p style="color:#6B7280;font-size:13px;margin-bottom:0">
+      Los archivos se leen en memoria y no se guardan en el disco. Máximo 4 MB entre los dos.
+      <br>
+      <a class="link" href="{{ url_for('rutas.resultados_fabrica') }}">Descargar resultados de los datos de fábrica</a>
+    </p>
+  </form>
+</div>
+{% endif %}
 
 <div class="tarjetas">
   <div class="tarjeta apr"><div class="num">{{ contadores['Aprobación'] }}</div><div class="lbl">Certificados de Aprobación</div></div>
@@ -14,6 +51,7 @@
   <div class="tarjeta sin"><div class="num">{{ contadores['Sin certificado'] }}</div><div class="lbl">Sin certificado</div></div>
 </div>
 
+{% if session.rol == 'admin' %}
 <div class="panel alerta">
   <h2>Inconsistencias para revisar ({{ inconsistencias|length }})</h2>
   {% if inconsistencias %}
@@ -25,6 +63,7 @@
   </table>
   {% else %}<p>No hay inconsistencias.</p>{% endif %}
 </div>
+{% endif %}
 
 <div class="panel">
   <h2>Resultados por estudiante</h2>
@@ -37,7 +76,7 @@
       <td>{{ '%.2f'|format(r.promedio) }}</td>
       <td>{{ '%.2f'|format(r.asistencia) }} %</td>
       <td><span class="etq {{ r.tipo.split(' ')[0] }}">{{ r.tipo }}</span></td>
-      <td>{% if r.tipo != 'Sin certificado' %}<a class="link" href="{{ url_for('rutas.certificado', identificacion=r.identificacion, programa=slug(r.programa)) }}" target="_blank">Ver PDF</a>{% endif %}</td>
+      <td>{% if not datos_subidos and r.tipo != 'Sin certificado' %}<a class="link" href="{{ url_for('rutas.certificado', identificacion=r.identificacion, programa=slug(r.programa)) }}" target="_blank">Ver PDF</a>{% endif %}</td>
     </tr>
     {% endfor %}
   </table>

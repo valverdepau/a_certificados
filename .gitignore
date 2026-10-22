@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 .vercel
 datos_local.db
+.pytest_cache/

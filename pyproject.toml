@@ -11,3 +11,8 @@ dependencies = [
     "psycopg[binary]>=3.2",
     "python-dotenv>=1.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
